@@ -72,7 +72,8 @@ for idx, post in enumerate(posts):
         # Display translated or generated content
         if custom_display_key in st.session_state:
             st.markdown("**Translated / Generated Result:**")
-            st.write(st.session_state[custom_display_key])
+            with st.container(border=True):
+              st.write(st.session_state[custom_display_key])
 
         # Send button logic
         if st.button("Send Custom Reply", key=f"send_custom_{idx}"):

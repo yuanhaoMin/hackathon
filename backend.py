@@ -158,12 +158,12 @@ def generate_reply(text, language, original, platform):
     if not text:
       response = client.responses.create(
           model="gpt-4o",
-          input=f"Someone replied to you on social media on the platfrom {platform} with the text between ###.\nPlease generate a written response in the style for the platform {platform} in the language of {language}. Only show the formulated reply, no other text.\n###{original}###",
+          input=f"Someone replied to you on social media on the platfrom {platform} with the text between ###.\nPlease generate a written response in the style for the platform {platform} in the language of {language}. Reference the original message in your reply. Only show the formulated reply, no other text.\n###{original}###",
       )
       return response.output_text
 
     response = client.responses.create(
         model="gpt-4o",
-        input=f"Someone replied to you on social media on the platform {platform} with the text between ###.\nWe already have a draft for a response, it comes after the original message. Please generate a written response in the style for the platform {platform} in the selected language: {language}. Only show the formulated reply, no other text.\n###{original}###\n{text}",
+        input=f"Someone replied to you on social media on the platform {platform} with the text between ###.\nWe already have a draft for a response: \"{text}\". Please generate a written response in the style for the platform {platform} in the selected language: {language}. Reference the original message in your reply. Only show the formulated reply, no other text.\n###{original}###\n",
     )
     return response.output_text
