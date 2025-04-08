@@ -152,18 +152,18 @@ def translate_reply(text, language):
     return response.output_text
 
 
-def generate_reply(text, language, original):
+def generate_reply(text, language, original, platform):
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     
     if not text:
       response = client.responses.create(
           model="gpt-4o",
-          input=f"Someone replied to you on social media with the text between ###.\nPlease generate a written response in the language of {language}. Only show the formulated reply, no other text.\n###{original}###",
+          input=f"Someone replied to you on social media on the platfrom {platform} with the text between ###.\nPlease generate a written response in the style for the platform {platform} in the language of {language}. Only show the formulated reply, no other text.\n###{original}###",
       )
       return response.output_text
 
     response = client.responses.create(
         model="gpt-4o",
-        input=f"Someone replied to you on social media with the text between ###.\nWe already have a draft for a response, it comes after the original message. Please generate a written response in the selected language: {language}. Only show the formulated reply, no other text.\n###{original}###\n{text}",
+        input=f"Someone replied to you on social media on the platform {platform} with the text between ###.\nWe already have a draft for a response, it comes after the original message. Please generate a written response in the style for the platform {platform} in the selected language: {language}. Only show the formulated reply, no other text.\n###{original}###\n{text}",
     )
     return response.output_text

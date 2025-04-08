@@ -65,7 +65,7 @@ for idx, post in enumerate(posts):
                 st.rerun()
         with col2:
             if st.button("Generate", key=f"generate_btn_{idx}"):
-                result = generate_reply(text=custom_reply, language=selected_lang, original=post["message"])
+                result = generate_reply(text=custom_reply, language=selected_lang, original=post["message"], platform=post["platform"])
                 st.session_state[custom_display_key] = result
                 st.rerun()
 
