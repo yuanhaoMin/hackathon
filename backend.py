@@ -77,6 +77,22 @@ def get_reply_suggestions(comment):
     }
     return suggestions.get(comment, ["Thanks", "Thank you", "¡Gracias!", "Danke!"])
 
+def get_platforms():
+    platforms = [
+        {
+            "name": "X",
+        },
+        {
+            "name": "Instagram",
+        },
+        {
+            "name": "LinkedIn",
+        },
+        {
+            "name": "Facebook",
+        }
+    ]
+    return platforms
 
 def get_social_media_posts():
     posts = [
@@ -131,15 +147,23 @@ def translate_reply(text, language):
 
     response = client.responses.create(
         model="gpt-4o",
-        input=f"Please translate the following text into {language}:\n\n{text}",
+        input=f"Please translate the following text between ### into {language}. Only show the translation, no other text.\n\n###{text}###",
     )
     return response.output_text
 
 
-def generate_reply(text, language):
+def generate_reply(text, language, original):
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+    
+    if not text:
+      response = client.responses.create(
+          model="gpt-4o",
+          input=f"Someone replied to you on social media with the text between ###.\nPlease generate a written response in the language of {language}. Only show the formulated reply, no other text.\n###{original}###",
+      )
+      return response.output_text
+
     response = client.responses.create(
         model="gpt-4o",
-        input=f"Someone replied to you on social media with text: {text}.\nPlease generate a written response in the selected language: {language}. Dont return anything other than the reply!",
+        input=f"Someone replied to you on social media with the text between ###.\nWe already have a draft for a response, it comes after the original message. Please generate a written response in the selected language: {language}. Only show the formulated reply, no other text.\n###{original}###\n{text}",
     )
     return response.output_text

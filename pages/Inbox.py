@@ -1,6 +1,6 @@
 import streamlit as st
 
-from backend import Language, generate_reply, get_social_media_posts, translate_reply
+from backend import Language, generate_reply, get_platforms, get_social_media_posts, translate_reply
 
 # Use Streamlit's session_state to keep track of replies for each post
 if "replies" not in st.session_state:
@@ -13,11 +13,23 @@ st.write(
     "Displays posts from different social platforms, and allows direct replies under each post (supports multiple languages)."
 )
 posts = get_social_media_posts()
+platforms = get_platforms()
+
+selected_platforms = st.multiselect("Platforms:", options=[platform["name"] for platform in platforms], default=[platform["name"] for platform in platforms])
 
 for idx, post in enumerate(posts):
+    
+    if post["platform"] not in selected_platforms:
+        continue
+
     with st.expander(f"[{post['platform']}] {post['sender']} posted at {post['time']}"):
-        st.write(f"**Message Content:** {post['message']}")
-        st.write(f"**Original Language:** {post['language']}")
+        st.write("***Message Content***")
+        with st.container(border=True):
+          st.write(f"{post['message']}")
+
+        st. write("***Original Language***")
+        with st.container(border=True):
+          st.write(f"{post['language']}")
 
         if str(idx) in st.session_state.replies:
             st.markdown("**Reply History:**")
@@ -53,7 +65,7 @@ for idx, post in enumerate(posts):
                 st.rerun()
         with col2:
             if st.button("Generate", key=f"generate_btn_{idx}"):
-                result = generate_reply(text=custom_reply, language=selected_lang)
+                result = generate_reply(text=custom_reply, language=selected_lang, original=post["message"])
                 st.session_state[custom_display_key] = result
                 st.rerun()
 
@@ -72,3 +84,4 @@ for idx, post in enumerate(posts):
                 st.rerun()
             else:
                 st.warning("Please enter reply content before sending.")
+# test
